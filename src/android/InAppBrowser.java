@@ -104,6 +104,8 @@ public class InAppBrowser extends CordovaPlugin {
      * @return              A PluginResult object with a status and message.
      */
     public boolean execute(String action, CordovaArgs args, final CallbackContext callbackContext) throws JSONException {
+
+        Log.e("args", args.toString());
         if (action.equals("open")) {
             this.callbackContext = callbackContext;
             final String url = args.getString(0);
@@ -752,6 +754,30 @@ public class InAppBrowser extends CordovaPlugin {
         public InAppBrowserClient(CordovaWebView webView, EditText mEditText) {
             this.webView = webView;
             this.edittext = mEditText;
+        }
+
+        /**
+         *
+         * @param view
+         * @param url
+         * @return
+         */
+        public boolean shouldOverrideUrlLoading (WebView view, String url){
+            if(url.startsWith("freshgradestudent:")) {
+                try {
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    cordova.getActivity().startActivity(intent);
+                } catch (android.content.ActivityNotFoundException e) {
+                    LOG.e(LOG_TAG, "Error with " + url + ": " + e.toString());
+                }
+
+                return true;
+
+            }
+
+            return false;
         }
 
         /**
